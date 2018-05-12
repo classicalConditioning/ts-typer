@@ -1,0 +1,65 @@
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using TsTyper.Errors;
+
+namespace TsTyper
+{
+    public static class Parser
+    {
+        /// <summary>
+        /// Parse an assembly at a provided path, only selecting
+        /// classes that belong to the specified namespace.
+        /// </summary>
+        /// <param name="inputPath">The input path.</param>
+        /// <param name="outputPath">The output path.</param>
+        /// <param name="namespacePath">The namespace.</param>
+        public static int Parse(string inputPath, string outputPath = "./", string namespacePath = "*")
+        {
+            var assembly = GetAssemblyFromPath(inputPath);
+            var types = GetTypes(assembly, namespacePath).ToList();
+            if (types.Count == 0)
+            {
+                throw new NoTypesFoundException(inputPath, namespacePath);
+            }
+
+            return types.Count;
+        }
+
+        /// <summary>
+        /// Try to get an assembly from the specified path.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <returns>Assembly located at the specified path.</returns>
+        private static Assembly GetAssemblyFromPath(string path)
+        {
+            try
+            {
+                var assembly = Assembly.LoadFrom(path);
+                return assembly;
+            }
+            catch(System.Exception e)
+            {
+                throw new InvalidPathException(path);
+            }
+        }
+
+        /// <summary>
+        /// Get types from assembly.
+        /// </summary>
+        /// <param name="assembly"></param>
+        /// <param name="namespacePath"></param>
+        /// <returns></returns>
+        private static IEnumerable<System.Type> GetTypes(Assembly assembly, string namespacePath) 
+        {
+            var allTypes = assembly.GetTypes();
+
+            if (namespacePath == "*")
+            {
+                return allTypes;
+            }
+
+            return allTypes.Where(x => x.Namespace.Contains(namespacePath));
+        }
+    }
+}
