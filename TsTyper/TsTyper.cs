@@ -1,15 +1,14 @@
 ﻿using Microsoft.Extensions.CommandLineUtils;
 using System;
 
-
 namespace TsTyper
 {
-    class TsTyper
+    public class TsTyper
     {
         public static string InputPath { get; set; }
         public static string OutputPath { get; set; }
         public static string NamespacePath { get; set; }
-        public static OutputType OutputType { get; set; }
+        public static ParserOutputType OutputType { get; set; }
 
         static void Main(string[] args)
         {
@@ -47,8 +46,8 @@ namespace TsTyper
                 {
                     var value = 0;
                     Int32.TryParse(outputPathOption.Value(), out value);
-                    if (Enum.IsDefined(typeof(OutputType), value)) {
-                        OutputType = (OutputType) value;
+                    if (Enum.IsDefined(typeof(ParserOutputType), value)) {
+                        OutputType = (ParserOutputType) value;
                     }
                 }
 
@@ -79,21 +78,7 @@ namespace TsTyper
                 });
             });
 
-            //var inputPath = Console.ReadLine();
-            //var outputPath = Console.ReadLine();
-            //var namespacePath = Console.ReadLine();
-            //try
-            //{
-            //   var count = Parser.Parse(inputPath, "./", namespacePath);
-            //   Console.WriteLine($"Successfully exported {count} type(s)!");
-            //}
-            //catch (Exception e)
-            //{
-            //    Console.WriteLine($"Error: {e.Message}");
-            //    Console.ReadLine();
-            //}
-
-            Console.ReadLine();
+            app.Execute(args);
         }
     }
 }

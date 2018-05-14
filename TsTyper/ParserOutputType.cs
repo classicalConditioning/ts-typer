@@ -1,6 +1,6 @@
 ﻿namespace TsTyper
 {
-    public enum OutputType
+    public enum ParserOutputType
     {
         Interface = 0,
         Class = 1

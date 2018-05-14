@@ -16,7 +16,7 @@ namespace TsTyper
         /// <param name="inputPath">The input path.</param>
         /// <param name="outputPath">The output path.</param>
         /// <param name="namespacePath">The namespace.</param>
-        public static void Parse(string inputPath, string outputPath, string namespacePath, OutputType outputType)
+        public static void Parse(string inputPath, string outputPath, string namespacePath, ParserOutputType outputType)
         {
             var assembly = GetAssemblyFromPath(inputPath);
             var types = GetTypes(assembly, namespacePath).ToList();
