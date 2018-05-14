@@ -1,11 +1,10 @@
 ﻿using Microsoft.Extensions.CommandLineUtils;
 using System;
-using System.Reflection;
 
 
 namespace TsTyper
 {
-    class Program
+    class TsTyper
     {
         public static string InputPath { get; set; }
         public static string OutputPath { get; set; }

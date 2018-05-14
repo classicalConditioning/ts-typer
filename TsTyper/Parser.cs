@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using TsTyper.Errors;
@@ -14,7 +16,7 @@ namespace TsTyper
         /// <param name="inputPath">The input path.</param>
         /// <param name="outputPath">The output path.</param>
         /// <param name="namespacePath">The namespace.</param>
-        public static int Parse(string inputPath, string outputPath = "./", string namespacePath = "*")
+        public static void Parse(string inputPath, string outputPath, string namespacePath, OutputType outputType)
         {
             var assembly = GetAssemblyFromPath(inputPath);
             var types = GetTypes(assembly, namespacePath).ToList();
@@ -23,7 +25,7 @@ namespace TsTyper
                 throw new NoTypesFoundException(inputPath, namespacePath);
             }
 
-            return types.Count;
+            Console.WriteLine($"Exporting {types.Count} type(s)...");
         }
 
         /// <summary>
@@ -31,14 +33,15 @@ namespace TsTyper
         /// </summary>
         /// <param name="path">The path.</param>
         /// <returns>Assembly located at the specified path.</returns>
-        private static Assembly GetAssemblyFromPath(string path)
+        public static Assembly GetAssemblyFromPath(string path)
         {
             try
             {
-                var assembly = Assembly.LoadFrom(path);
+                var dllFile = new FileInfo(path);
+                var assembly = Assembly.LoadFrom(dllFile.FullName);
                 return assembly;
             }
-            catch(System.Exception e)
+            catch(Exception e)
             {
                 throw new InvalidPathException(path);
             }
@@ -50,16 +53,24 @@ namespace TsTyper
         /// <param name="assembly"></param>
         /// <param name="namespacePath"></param>
         /// <returns></returns>
-        private static IEnumerable<System.Type> GetTypes(Assembly assembly, string namespacePath) 
+        public static IEnumerable<Type> GetTypes(Assembly assembly, string namespacePath) 
         {
-            var allTypes = assembly.GetTypes();
-
-            if (namespacePath == "*")
+            try
             {
-                return allTypes;
+                var allTypes = assembly.GetTypes();
+                if (namespacePath == "*")
+                {
+                    return allTypes;
+                }
+
+                return allTypes.Where(x => x.Namespace.Contains(namespacePath));
+            }
+            catch (Exception e) {
+                Console.WriteLine(e.Message);
             }
 
-            return allTypes.Where(x => x.Namespace.Contains(namespacePath));
+            return new List<Type>();
+
         }
     }
 }
