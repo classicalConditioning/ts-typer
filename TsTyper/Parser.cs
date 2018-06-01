@@ -26,7 +26,7 @@ namespace TsTyper
             }
 
             Console.WriteLine($"Exporting {types.Count} type(s)...");
-            Builder.Build(types, outputPath, suffix);
+            Builder.Build(types, outputPath, suffix, outputType);
         }
 
         /// <summary>
@@ -64,7 +64,7 @@ namespace TsTyper
                     return allTypes;
                 }
 
-                return allTypes.Where(x => x.Namespace.Contains(namespacePath));
+                return allTypes.Where(x => x.Namespace.Contains(namespacePath)).ToList();
             }
             catch (Exception e) {
                 Console.WriteLine(e.Message);
