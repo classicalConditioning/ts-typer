@@ -1,2 +1,2 @@
 # ts-typer
-A gulp tool to convert C# models to Typescript models. 
+A command line tool that generates typescript classes and interfaces from C# classes and interfaces.
