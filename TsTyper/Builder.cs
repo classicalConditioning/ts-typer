@@ -27,10 +27,22 @@ namespace TsTyper
             return " extends " + type.BaseType.Name + suffix;
         }
 
+        private static bool IsValidFileName(string name)
+        {
+            return !string.IsNullOrEmpty(name) && name.IndexOfAny(Path.GetInvalidFileNameChars()) < 0;
+        }
+
         public static void Export(Type type, string outputPath, string suffix)
         {
             var className = type.Name + suffix;
             var file = $"{outputPath}{className}.ts";
+
+            if (!IsValidFileName(className))
+            {
+                Console.WriteLine($"Can't export class: {className}. Invalid filename.");
+                return;
+            }
+
             using (StreamWriter sw = File.CreateText(file))
             {
                 sw.Write($"export interface {className}");
